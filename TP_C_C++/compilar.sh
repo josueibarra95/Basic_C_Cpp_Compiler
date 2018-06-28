@@ -3,8 +3,8 @@ flex traductor.l
 bison  -d traductor.y 
 gcc lex.yy.c traductor.tab.c -o Traductor
 clear
-echo -n "Generador de traductor completa "
-echo -n "Ingrese NOMBRE del archivo (sin extension C) que sera la ENTRADA del traductor: "
+echo -n "El traductor se ha generado correctamente.\n"
+echo -n "Ingrese el nombre del archivo origen (sin la extension .c) con el código en el lenguaje fuente (C): "
 read  var1
 var1+=".c"
 x=0
@@ -14,15 +14,15 @@ x=0
 			echo $var1
 		 	break
 		else
-		  echo -n "archivo inexistente, Favor INGRESE EL ARCHIVO C sin su extencion (.c) "
+		  echo -n "Archivo inexistente. Modo de uso: \"archivo\"\n (Sin extension .c)."
           read  var1
 		  var1+=".c"
 		  echo $var1
 		fi
 	done
-echo -n "Ingrese NOMBRE del archivo (sin extension PHP) que sera la SALIDA del traductor (PUEDE NO EXISTIR, si es asi, se creara): "
+echo -n "Ingrese el nombre del archivo destino (sin la extension .cpp) donde se almacenará el código traducido al lenguaje destino (C++): "
 read  var
-var+=".php"
+var+=".cpp"
 clear
 touch $var
 ./Traductor $var1 $var

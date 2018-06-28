@@ -132,7 +132,7 @@ void count()
 void comentario(void)
 {
     int c1, c2; //se declaran las variables c1, c2
-    c1 = input(); //se guarda en c1 un caracter
+    c1 = 0; //input(); //se guarda en c1 un caracter
     c2 = input(); //se guarda en c2 el siguiente caracter
     while (c2 != EOF && !(c1 == '*' && c2 == '/')) 
     {
@@ -142,7 +142,7 @@ void comentario(void)
             c2 = input(); //c2 toma valor de un nuevo caracter
     }
     if( c2 == EOF ){
-        printf("Falta cerrar el comentario.\n");
+        printf("Error. Comentario no cerrado.\n");
     }
 }
 

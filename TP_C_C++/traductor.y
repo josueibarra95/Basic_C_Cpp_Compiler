@@ -4,8 +4,8 @@
 #include <string.h>
 #include "symtable.h"
 
-// defino las funciones EXTERN, ya que usamos Bison, esto deveria de hacerse
-// de forma automatica, pero param evitar problema al traducir, declaro
+// defino las funciones EXTERN, ya que usamos Bison, esto deberia de hacerse
+// de forma automatica, pero param evitar problemas al traducir, declaro
 
 extern int yylex(void);													    // devuelve un valor entero que representa un tipo de token
 extern FILE *yyin;														    // lugar de donde flex/lexx lee los caracteres
@@ -252,7 +252,7 @@ init_declarator
 							}
 							else
 							{
-								printf("Variable ya declarada!\n");
+								fprintf(stderr, "Variable ya declarada!\n");
 								yyerrok;	
 							}
 						}
@@ -265,7 +265,7 @@ init_declarator
 							}
 							else
 							{
-								printf("Variable ya declarada!\n");
+								fprintf(stderr, "Variable ya declarada!\n");
 								yyerrok;
 							}
 						}
@@ -312,7 +312,7 @@ parameter_declaration
 						    }
 						    else
 						    {
-						        printf("Variable ya declarada!\n");
+						        fprintf(stderr, "Variable ya declarada!\n");
 						        yyerrok;
 						    }
 						}
@@ -412,7 +412,7 @@ function_definition
 							}
 							else
 							{
-								printf("Funcion ya declarada!");
+								fprintf(stderr, "Funcion ya declarada!");
 								yyerrok;
 							}
 						}
@@ -445,7 +445,7 @@ yyerror(s)
 char *s;
 {
 	sin_error=0;
-	printf("%s: ERROR en la Linea %d cerca de:  %s\n", s, yylineno, yylval.nombre);
+	fprintf(stderr, "%s: ERROR en la Linea %d cerca de:  %s\n", s, yylineno, yylval.nombre);
 }
 
 symrec * putsym(sym_name,sym_type, b_function)
@@ -514,7 +514,7 @@ void leer_archivo()
     char c;
 	if ((yyoutput=fopen(entrada, "r")) == NULL)
 	{
-		printf("No se pudo abrir el archivo para escritura\n");
+		fprintf(stderr, "Error. No se pudo abrir el archivo destino.\n");
             return;
 	}
     while(1)
@@ -561,22 +561,22 @@ void clonacion(){
 //									MAIN - DEF
 int main(int argc,char **argv)
 {
-	strcpy(entrada,argv[2]);
-	/* Debe tener 3 parametros, ejecutable.exe /path/to/fuente.c /path/to/objeto.php */
+	/* Debe tener 3 parametros, ejecutable.exe /path/to/fuente.c /path/to/objeto.cpp */
 	if (argc<3)
 	{
-		printf("Modo incorrecto de uso\n Forma correcta %s archivo.c archivo.php\n", argv[0]);
-		return 0;
+		fprintf(stderr, "Error. Modo incorrecto de uso.\n Forma correcta: %s archivo.c archivo.cpp\n", argv[0]);
+		return 1;
 	}
 	if ((yyin = fopen(argv[1],"rt")) == NULL) /*  */
 	{
-		printf("No se pudo abrir el archivo de lectura\n");
-                return 0;
+		fprintf(stderr, "Error al abrir el archivo de origen %s\n", argv[1]);
+                return 1;
 	}
-	if ((yyoutput=fopen(argv[2], "w")) == NULL)
+	strcpy(entrada,argv[2]);
+	if ((yyoutput=fopen(entrada, "w")) == NULL)
 	{
-		printf("No se pudo abrir el archivo para escritura\n");
-                return 0;
+		fprintf(stderr, "Error al abrir el archivo destino %s\n", entrada);
+                return 1;
 	}
 
 	fprintf(yyoutput, "\n");
@@ -596,9 +596,9 @@ int main(int argc,char **argv)
     fclose(yyoutput);
 
 	if(sin_error)
-		printf("***********_ Traducción COMPLETA _***********\n");
+		printf("El archivo %s ha sido traducido al archivo %s exitosamente.\n", argv[1], entrada);
 	else
-		printf("\nNo se pudo finalizar la traducción.\n");
+		fprintf(stderr, "\nError. No se pudo realizar la traducción.\n");
 
 	FILE *simbolos;
 	strcat(argv[1], ".txt");

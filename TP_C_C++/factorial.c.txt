@@ -1,0 +1,17 @@
+NOMBRE, TIPO, VARIABLE O FUNCION.
+	main, NO, Funcion
+	resultado, NO, Variable
+	hola, NO, Variable
+	number, NO, Variable
+	prueba4, NO, Funcion
+	e, NO, Variable
+	prueba3, NO, Funcion
+	d, NO, Variable
+	prueba2, NO, Funcion
+	b, NO, Variable
+	prueba, NO, Funcion
+	a, NO, Variable
+	factorial, NO, Funcion
+	result, NO, Variable
+	c, NO, Variable
+	n, NO, Variable

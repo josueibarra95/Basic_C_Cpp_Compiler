@@ -1,0 +1,3 @@
+NOMBRE, TIPO, VARIABLE O FUNCION.
+	funcion, NO, Funcion
+	array, NO, Variable

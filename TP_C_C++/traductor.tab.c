@@ -1877,10 +1877,10 @@ yyreduce:
 									symtable_set_type->type=(yyvsp[-2].tipo);
 								}
 							}
-							if (cant_corchetes==1 && imprimir_corchete==1)
+							if (cant_corchetes>0 && imprimir_corchete==1)
 							{
 								fprintf(yyoutput, "];\n");
-								cant_corchetes=0;
+								cant_corchetes--;
 								imprimir_corchete=0;
 							}else
 								fprintf(yyoutput, ";\n");
@@ -1959,7 +1959,7 @@ yyreduce:
 
   case 117:
 #line 288 "traductor.y" /* yacc.c:1646  */
-    { tam_vector=1; if (!cant_corchetes) fprintf(yyoutput, "[ "); cant_corchetes=1; }
+    { tam_vector=1; /*if (!cant_corchetes)*/ fprintf(yyoutput, "[ "); ++cant_corchetes; }
 #line 1964 "traductor.tab.c" /* yacc.c:1646  */
     break;
 
@@ -1971,7 +1971,7 @@ yyreduce:
 
   case 119:
 #line 290 "traductor.y" /* yacc.c:1646  */
-    { if (!cant_corchetes) fprintf(yyoutput, "[ "); cant_corchetes=1; }
+    { /*if (!cant_corchetes)*/ fprintf(yyoutput, "[ "); ++cant_corchetes; }
 #line 1976 "traductor.tab.c" /* yacc.c:1646  */
     break;
 

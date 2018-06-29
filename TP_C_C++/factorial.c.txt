@@ -2,6 +2,9 @@ NOMBRE, TIPO, VARIABLE O FUNCION.
 	main, NO, Funcion
 	resultado, NO, Variable
 	hola, NO, Variable
+	array, NO, Variable
+	j, NO, Variable
+	i, NO, Variable
 	number, NO, Variable
 	prueba4, NO, Funcion
 	e, NO, Variable

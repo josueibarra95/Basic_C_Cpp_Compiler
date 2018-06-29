@@ -33,8 +33,20 @@ int prueba4( int e ) {
 int main()
 {
   int number;
-  char hola[];
+  int i;
+  int j;
+  int array[1][2]; 
+  char hola[3];
   int resultado;
+  i = 0;
+  while(i < 1){
+      j = 0;
+      while(j < 2){
+          array[i][j] = i + j;
+          j++;
+      }
+      i++;
+  }
   number = 3;
   resultado = factorial(number);
   return 0;

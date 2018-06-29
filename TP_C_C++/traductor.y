@@ -215,10 +215,10 @@ declaration
 									symtable_set_type->type=$1;
 								}
 							}
-							if (cant_corchetes==1 && imprimir_corchete==1)
+							if (cant_corchetes>0 && imprimir_corchete==1)
 							{
 								fprintf(yyoutput, "];\n");
-								cant_corchetes=0;
+								cant_corchetes--;
 								imprimir_corchete=0;
 							}else
 								fprintf(yyoutput, ";\n");
@@ -285,9 +285,9 @@ declarator
 direct_declarator
 	// Si es la declaracion de una funcion, pone FUNCTION YYTEXT, sino $YYTEXT 
 					: IDENTIFIER { if (comprueba_funcion){ fprintf(yyoutput, "%s", yytext); comprueba_funcion=0; } else fprintf(yyoutput, "%s", yytext); $$=$1; } 
-					| direct_declarator '[' { tam_vector=1; if (!cant_corchetes) fprintf(yyoutput, "[ "); cant_corchetes=1; }
+					| direct_declarator '[' { tam_vector=1; /*if (!cant_corchetes)*/ fprintf(yyoutput, "[ "); ++cant_corchetes; }
 					 constant_expression ']' { fprintf(yyoutput, "] ");}
-					| direct_declarator '['  { if (!cant_corchetes) fprintf(yyoutput, "[ "); cant_corchetes=1; }
+					| direct_declarator '['  { /*if (!cant_corchetes)*/ fprintf(yyoutput, "[ "); ++cant_corchetes; }
 					  ']' { fprintf(yyoutput, "] "); }
 					| direct_declarator '(' { fprintf(yyoutput, "( "); } ')' { fprintf(yyoutput, " )"); }
 					| direct_declarator '(' { fprintf(yyoutput, "( "); } parameter_type_list ')' { fprintf(yyoutput, " )"); }

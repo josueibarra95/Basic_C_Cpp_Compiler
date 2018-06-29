@@ -3,7 +3,7 @@ flex traductor.l
 bison  -d traductor.y 
 gcc lex.yy.c traductor.tab.c -o Traductor
 clear
-echo -n "El traductor se ha generado correctamente.\n"
+echo -n "El traductor se ha generado correctamente."
 echo -n "Ingrese el nombre del archivo origen (sin la extension .c) con el código en el lenguaje fuente (C): "
 read  var1
 var1+=".c"

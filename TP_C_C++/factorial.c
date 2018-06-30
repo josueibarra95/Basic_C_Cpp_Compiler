@@ -44,7 +44,7 @@ int main()
         while(j < 2){
             k = 0;
             while(k < 10){
-                array[i][j][k] = i + j k;
+                array[i][j][k] = i + j + k;
                 k++;
             }
             j++;

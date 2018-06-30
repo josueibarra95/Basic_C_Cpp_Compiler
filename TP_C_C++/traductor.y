@@ -510,6 +510,8 @@ const char *tipo_var(int tipo){
 //									MAIN - DEF
 int main(int argc,char **argv)
 {
+    char archivo_entrada[20];
+    char archivo_salida[20];
 	/*El input debe estar en formato:
         nombre_ejecutable /path/to/fuente.c /path/to/objeto.cpp */
 	if (argc<3)

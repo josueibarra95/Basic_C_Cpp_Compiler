@@ -28,15 +28,19 @@ int main(  ){
 int number;
 int i;
 int j;
-int array[ 5] [ 10] ;
+int k;
+int array[ 1] [ 2] [ 10] ;
 char hola[ 3] ;
 int resultado;
 i = 0;
-while( i < 5 ){
+while( i < 1 ){
 j = 0;
-while( j < 10 ){
-array[ i ][ j ] = i + j;
-cout << "array [" << i << "][" << j << "] = " << array[i][j] << "\n";
+while( j < 2 ){
+k = 0;
+while( k < 10 ){
+array[ i ][ j ][ k ] = a;
+k++;
+}
 j++;
 }
 i++;

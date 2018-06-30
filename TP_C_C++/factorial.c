@@ -35,14 +35,19 @@ int main()
   int number;
   int i;
   int j;
-  int array[1][2]; 
+  int k;
+  int array[1][2][10]; 
   char hola[3];
   int resultado;
   i = 0;
   while(i < 1){
       j = 0;
       while(j < 2){
-          array[i][j] = i + j;
+          k = 0;
+          while(k < 10){
+            array[i][j][k] = i + j k;
+            k++;
+        }
           j++;
       }
       i++;

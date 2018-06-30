@@ -1,5 +1,6 @@
 // Definiciones
 %{
+#define YYDEBUG 1
 #include <stdio.h>
 #include <string.h>
 #include "symtable.h"
@@ -479,17 +480,17 @@ symrec * getsym(sym_name)
 
 const char *tipo_id(int tipo){
 	switch(tipo){
-		case(282):
+		case(CHAR):
 			return "CHAR";
-		case(284):
+		case(INT):
 			return "INT";
-		case(288):
+		case(FLOAT):
 			return "FLOAT";
-		case(289):
+		case(DOUBLE):
 			return "DOUBLE";
-		case(290):
+		case(CONST):
 			return "CONST";
-		case(291):
+		case(VOID):
 			return "VOID";
 		default:
 			return "NO";

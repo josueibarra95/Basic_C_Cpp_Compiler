@@ -6,7 +6,7 @@
 #include "symtable.h"
 
 // defino las funciones EXTERN, ya que usamos Bison, esto deberia de hacerse
-// de forma automatica, pero param evitar problemas al traducir, declaro
+// de forma automatica, pero para evitar problemas al traducir, declaro
 
 extern int yylex(void);													    // devuelve un valor entero que representa un tipo de token
 extern FILE *yyin;														    // lugar de donde flex/lexx lee los caracteres
@@ -70,7 +70,7 @@ primary_expression
 			// a)
 					: IDENTIFIER	{ if (comprueba_funcion){ fprintf(yyoutput, "%s", yytext); comprueba_funcion=0; } else if(variable_global){ fprintf(yyoutput, "%s", yytext); }else{ fprintf(yyoutput, "%s", yytext);} } 
 			// b)
-					| CONSTANT { if (!tam_vector) {fprintf(yyoutput, "%s", yytext); } else {fprintf(yyoutput, "%s", yytext); tam_vector=0;} }
+					| CONSTANT {fprintf(yyoutput, "%s", yytext); } 
 			// c)
 					| '(' { fprintf(yyoutput, "( "); } expression ')' { fprintf(yyoutput, " )"); }
 					;
@@ -225,7 +225,21 @@ declaration
 								fprintf(yyoutput, ";\n");
 											
 						}
-		//			| declaration_specifiers init_declarator_list error { yyerror("Falta \";\". "); yyerrok; }
+						| declaration_specifiers init_declarator_list error {
+                            printf("ERROR: Falta \";\" en la linea %d.\n", yylineno);  
+                            for(symtable_set_type=sym_table; symtable_set_type!=(symrec *)0; symtable_set_type=(symrec *)symtable_set_type->next){
+                                    if(symtable_set_type->type==-1){ 
+                                        symtable_set_type->type=$1; 
+                                    } 
+                            }
+                            if (cant_corchetes==1 && imprimir_corchete==1) 
+                            { 
+                                fprintf(yyoutput, "];\n"); 
+                                cant_corchetes=0; 
+                                imprimir_corchete=0; 
+                            }else 
+                                fprintf(yyoutput, ";\n"); 
+                        }
 					;
 
 declaration_specifiers
@@ -292,6 +306,8 @@ direct_declarator
 					  ']' { fprintf(yyoutput, "] "); }
 					| direct_declarator '(' { fprintf(yyoutput, "( "); } ')' { fprintf(yyoutput, " )"); }
 					| direct_declarator '(' { fprintf(yyoutput, "( "); } parameter_type_list ')' { fprintf(yyoutput, " )"); }
+					| direct_declarator '[' error {printf("ERROR: Declaracion de array incorrecta en la linea %d.\n", yylineno); 
+                                                    if (!cant_corchetes) fprintf(yyoutput, "["); fprintf(yyoutput, "]");} 
 					;
 
 parameter_type_list
@@ -351,9 +367,7 @@ labeled_statement
 compound_statement
 					: '{' { fprintf(yyoutput, "{ "); } '}' { fprintf(yyoutput, " }\n"); }
 					| '{' { fprintf(yyoutput, "{\n"); } statement_list '}' { fprintf(yyoutput, "}\n"); }
-/*| '{' { fprintf(yyoutput, "{\n"); } declaration_list '}' { fprintf(yyoutput, "}\n"); }*/
 					| '{' { fprintf(yyoutput, "{\n"); } declaration_list statement_list '}' { fprintf(yyoutput, "}\n"); }
-		//			| '{' error { yyerror("Falta \"}\"."); yyerrok; }
 					;
 
 declaration_list
@@ -393,10 +407,6 @@ jump_statement
 					| BREAK { fprintf(yyoutput, "break"); } ';' { fprintf(yyoutput, ";\n"); }
 					| RETURN { fprintf(yyoutput, "return"); } ';' { fprintf(yyoutput, ";\n"); }
 					| RETURN { fprintf(yyoutput, "return "); } expression ';' { fprintf(yyoutput, ";\n"); }
-	//				| CONTINUE error { yyerror("Falta \";\" despues de continue en la sentencia."); yyerrok; }
-	//				| BREAK error { yyerror ("Falta \";\" despues de break en la sentencia."); yyerrok;}
-	// 				| RETURN error { yyerror ("Falta \";\" despues de return en la sentencia."); yyerrok;}
-	// 				| RETURN expression error { yyerror("Falta \";\" despues de return en la sentencia."); yyerrok;}
 					;
 external_declaration
 					: function_definition { comprueba_funcion=1; }
@@ -431,22 +441,11 @@ translation_unit
 
 #include <stdio.h>
 #include <string.h>
-#define X 300
-#define Y 300
-int indice =0;
-char matriz[300][300],matriz_aux[300][300];
-char funcion_name[20],funcion_name_aux[20];
-char matriz_aux1[300][300];
-int encontro_funcion=0,fil=0,col=0,columna=0;
-void leer_archivo();
-void clonacion();
-char entrada[20];
 
 yyerror(s)
 char *s;
 {
-	sin_error=0;
-	fprintf(stderr, "%s: ERROR en la Linea %d cerca de:  %s\n", s, yylineno, yylval.nombre);
+    fprintf(stderr, "%s en la linea %d.\n", s, yylineno); 
 }
 
 symrec * putsym(sym_name,sym_type, b_function)
@@ -508,111 +507,36 @@ const char *tipo_var(int tipo){
 	}
 }
 
-void leer_archivo()
-{
-    
-    int i=0,j=0;
-    char c;
-	if ((yyoutput=fopen(entrada, "r")) == NULL)
-	{
-		fprintf(stderr, "Error. No se pudo abrir el archivo destino.\n");
-            return;
-	}
-    while(1)
-    {
-        c = fgetc(yyoutput);
-        if(c=='\n')
-        {
-            i++;
-            j=0;
-        }else{
-
-            j++;
-        }
-        matriz[i][j]=c;
-        if( feof(yyoutput) )
-        {
-            break ;
-        }
-    }
-    fclose(yyoutput);
-    indice = i;
-}
-
-void clonacion(){
-
-	int q,w,z;
-	z=0;
-	for(q=0;q<X;q++)
-	{
-
-			if(q == (indice-2))
-				{
-					strcat(matriz_aux1[z], "\n}");
-
-				}
-			else{
-				strcat(matriz_aux1[z], matriz_aux[q]);
-			}
-		z++;
-
-	}
-}
-
 //									MAIN - DEF
 int main(int argc,char **argv)
 {
-	/* Debe tener 3 parametros, ejecutable.exe /path/to/fuente.c /path/to/objeto.cpp */
+	/*El input debe estar en formato:
+        nombre_ejecutable /path/to/fuente.c /path/to/objeto.cpp */
 	if (argc<3)
 	{
 		fprintf(stderr, "Error. Modo incorrecto de uso.\n Forma correcta: %s archivo.c archivo.cpp\n", argv[0]);
 		return 1;
 	}
-	if ((yyin = fopen(argv[1],"rt")) == NULL) /*  */
+	strcpy(archivo_entrada, argv[1]);
+	if ((yyin = fopen(archivo_entrada,"rt")) == NULL) /*  */
 	{
-		fprintf(stderr, "Error al abrir el archivo de origen %s\n", argv[1]);
+		fprintf(stderr, "Error al abrir el archivo de origen %s\n", archivo_entrada);
                 return 1;
 	}
-	strcpy(entrada,argv[2]);
-	if ((yyoutput=fopen(entrada, "w")) == NULL)
+	strcpy(archivo_salida, argv[2]);
+	if ((yyoutput=fopen(archivo_salida, "w")) == NULL)
 	{
-		fprintf(stderr, "Error al abrir el archivo destino %s\n", entrada);
+		fprintf(stderr, "Error al abrir el archivo destino %s\n", archivo_salida);
                 return 1;
 	}
 
-	fprintf(yyoutput, "\n");
+    fprintf(yyoutput, "#include <iostream>\nusing namespace std;\n");
 	yyparse();
 	fprintf(yyoutput, "\n");
 	fclose(yyin);
 	fclose(yyoutput);
-	leer_archivo();
-	clonacion();
-	remove(entrada);
-    yyoutput = fopen(entrada,"w+");
-    fprintf(yyoutput, "#include <iostream>\nusing namespace std;\n");
-    for(fil=0;fil<indice;fil++)
-     {
-        fprintf(yyoutput, "%s", matriz[fil]);
-    }
-    fclose(yyoutput);
-
-	if(sin_error)
-		printf("El archivo %s ha sido traducido al archivo %s exitosamente.\n", argv[1], entrada);
-	else
-		fprintf(stderr, "\nError. No se pudo realizar la traducción.\n");
-
-	FILE *simbolos;
-	strcat(argv[1], ".txt");
-	simbolos=fopen(argv[1], "w+");
-	symrec * ptr_table;
-	fprintf(simbolos, "NOMBRE, TIPO, VARIABLE O FUNCION.\n");
-	for(ptr_table = sym_table; ptr_table!=(symrec *)0; ptr_table=(symrec *)ptr_table->next)
-	{
-		fprintf(simbolos, "\t%s, %s, %s\n", ptr_table->name,
-			tipo_id(ptr_table->type), 
-			tipo_var(ptr_table->function));
-	}
-
-	fclose(simbolos);
-	return 0;
+	
+	printf("El archivo %s ha sido traducido al archivo %s exitosamente.\n", argv[1], archivo_salida);
+    
+    return 0;
 }
